@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
 apply plugin: 'com.android.library'
 
 apply plugin: 'kotlin-android'
@@ -35,8 +45,25 @@ task sourceJar(type: Jar) {
     classifier "sources"
 }
 
+bintray {
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_KEY")
+    pkg {
+        repo = "titanium-knights"
+        name = "stunning-waddle"
+        userOrg = "titanium-knights"
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/titanium-knights/stunning-waddle.git'
+
+        version {
+            name = '0.1.1'
+        }
+    }
+    publications = ["main"]
+}
+
 publishing {
-    repositories {
+    /* repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/titanium-knights/stunning-waddle")
@@ -45,12 +72,12 @@ publishing {
                 password = project.findProperty("gpr.key") ?: System.getenv("GPR_PASSWORD")
             }
         }
-    }
+    } */
     publications {
-        gpr(MavenPublication) {
+        main(MavenPublication) {
             groupId 'io.github.titanium_knights'
             artifactId 'stunning_waddle'
-            version '0.1'
+            version '0.1.1'
             artifact(sourceJar)
             artifact("$buildDir/outputs/aar/StunningWaddle-release.aar")
         }
